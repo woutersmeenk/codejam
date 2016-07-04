@@ -12,8 +12,8 @@ type Tile rune
 
 const (
 	empty   Tile = ' '
-	goLeft  Tile = '\\'
-	goRight Tile = '/'
+	goLeft  Tile = '/'
+	goRight Tile = '\\'
 )
 
 func main() {

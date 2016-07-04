@@ -1,8 +1,39 @@
 package main
 
 import (
+	"bufio"
+	"strings"
 	"testing"
 )
+
+func TestParse(t *testing.T) {
+	// Arrange
+	data := bufio.NewScanner(strings.NewReader("2 2\r\n8 1 4 5 2 3 7 6"))
+	data.Split(bufio.ScanWords)
+
+	// Act
+	courtiers, numRows, numColumns, err := parse(data)
+
+	// Assert
+	if err != nil {
+		t.Fatal(err)
+	}
+	if numColumns != 2 {
+		t.Errorf("numColomns was %v expected 2", numColumns)
+	}
+	if numRows != 2 {
+		t.Errorf("numRows was %v expected 2", numRows)
+	}
+	if len(courtiers) != 8 {
+		t.Fatalf("courtiers length was %v expected 8", len(courtiers))
+	}
+	expectedCourtiers := []int{7, 2, 1, 4, 3, 6, 5, 0}
+	for i := 0; i < len(courtiers); i++ {
+		if courtiers[i] != expectedCourtiers[i] {
+			t.Errorf("Incorrectly parsed as index %v, result was: %v", i, courtiers)
+		}
+	}
+}
 
 func TestExample1(t *testing.T) {
 	// Arrange

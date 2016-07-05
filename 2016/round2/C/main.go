@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -76,8 +75,33 @@ func parse(scanner *bufio.Scanner) (courtiers []int, numRows, numColumns int, er
 }
 
 func solve(courtiers []int, numRows, numColumns int) (garden [][]Tile, err error) {
+	garden = make([][]Tile, numRows)
+	for x := 0; x < numRows; x++ {
+		garden[x] = make([]Tile, numColumns)
+	}
+	return garden, solveForRange(0, len(courtiers)-1, courtiers, garden)
+}
 
-	return nil, errors.New("bla")
+func solveForRange(start, end int, courtiers []int, garden [][]Tile) (err error) {
+	lover := courtiers[start]
+	if lover < start {
+		// Skip. We already processed this one before
+		return solveForRange(start+1, end, courtiers, garden)
+	}
+	if lover > end {
+		return fmt.Errorf("lover %v of courtier %v is outside of range [%v, %v]",
+			lover, start, start, end)
+	}
+	if start+1 != lover {
+		// Process the ones within this path
+		if err := solveForRange(start+1, lover-1, courtiers, garden); err != nil {
+			return err
+		}
+	}
+	if lover == end {
+		return nil
+	}
+	return solveForRange(lover+1, end, courtiers, garden)
 }
 
 func printOutput(garden [][]Tile) {

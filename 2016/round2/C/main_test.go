@@ -82,14 +82,11 @@ func TestExample4(t *testing.T) {
 	courtiers := []int{2, 3, 0, 1}
 
 	// Act
-	garden, err := solve(courtiers, 1, 1)
+	_, err := solve(courtiers, 1, 1)
 
 	// Assert
 	if err == nil {
-		t.Fatal(err)
-	}
-	if garden != nil {
-		t.Fatal(err)
+		t.Fatal("Expected error!")
 	}
 }
 
@@ -97,13 +94,13 @@ func checkOutput(t *testing.T, expected [][]Tile, actual [][]Tile) {
 	if len(expected) != len(actual) {
 		t.Fatal("Incorrect length:", actual)
 	}
-	for x := 0; x <= len(expected); x++ {
+	for x := 0; x < len(expected); x++ {
 		expectedRow := expected[x]
 		actualRow := actual[x]
 		if len(expectedRow) != len(actualRow) {
 			t.Fatal("Incorrect row length", actual)
 		}
-		for y := 0; y <= len(expectedRow); y++ {
+		for y := 0; y < len(expectedRow); y++ {
 			if expectedRow[y] != actualRow[y] {
 				t.Errorf("Incorrect value at (%v, %v): %v", x, y, actualRow[y])
 			}

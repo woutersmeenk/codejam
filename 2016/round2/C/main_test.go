@@ -79,7 +79,7 @@ func TestExample3(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		{botToTop, botToTop},
+		{topToBot, topToBot},
 		{topToBot, botToTop},
 	}, garden)
 }
@@ -109,16 +109,16 @@ func TestComplexGarden(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		{botToTop, botToTop, botToTop, botToTop},
-		{botToTop, botToTop, botToTop, botToTop},
-		{botToTop, botToTop, botToTop, botToTop},
-		{botToTop, botToTop, botToTop, botToTop},
+		{topToBot, topToBot, topToBot, topToBot},
+		{topToBot, botToTop, botToTop, botToTop},
+		{topToBot, botToTop, topToBot, topToBot},
+		{topToBot, botToTop, topToBot, botToTop},
 	}, garden)
 }
 
 func TestComplexImpossibleGarden(t *testing.T) {
 	// Arrange
-	courtiers := []int{15, 14, 13, 6, 5, 4, 3, 8, 7, 10, 9, 12, 11, 2, 1, 0}
+	courtiers := []int{15, 14, 13, 5, 6, 3, 4, 8, 7, 10, 9, 12, 11, 2, 1, 0}
 
 	// Act
 	garden, err := solve(caseParams{courtiers, 4, 4})

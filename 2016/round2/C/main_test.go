@@ -47,7 +47,7 @@ func TestExample1(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		[]tile{goLeft},
+		{goLeft},
 	}, garden)
 }
 
@@ -63,7 +63,7 @@ func TestExample2(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		[]tile{goLeft, goLeft, goRight},
+		{goLeft, goLeft, goRight},
 	}, garden)
 }
 
@@ -79,8 +79,8 @@ func TestExample3(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		[]tile{goLeft, goLeft},
-		[]tile{goRight, goLeft},
+		{goLeft, goLeft},
+		{goRight, goLeft},
 	}, garden)
 }
 
@@ -109,10 +109,10 @@ func TestComplexGarden(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		[]tile{goLeft, goLeft, goLeft, goLeft},
-		[]tile{goLeft, goLeft, goLeft, goLeft},
-		[]tile{goLeft, goLeft, goLeft, goLeft},
-		[]tile{goLeft, goLeft, goLeft, goLeft},
+		{goLeft, goLeft, goLeft, goLeft},
+		{goLeft, goLeft, goLeft, goLeft},
+		{goLeft, goLeft, goLeft, goLeft},
+		{goLeft, goLeft, goLeft, goLeft},
 	}, garden)
 }
 

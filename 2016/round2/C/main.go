@@ -10,9 +10,9 @@ import (
 type tile rune
 
 const (
-	empty   tile = 0
-	goLeft  tile = '/'
-	goRight tile = '\\'
+	empty    tile = 0
+	botToTop tile = '/'
+	topToBot tile = '\\'
 )
 
 type location struct {
@@ -94,8 +94,8 @@ func parse(scanner *bufio.Scanner) (params caseParams, err error) {
 
 func solve(params caseParams) (garden [][]tile, err error) {
 	garden = make([][]tile, params.numRows)
-	for x := 0; x < params.numRows; x++ {
-		garden[x] = make([]tile, params.numColumns)
+	for y := 0; y < params.numRows; y++ {
+		garden[y] = make([]tile, params.numColumns)
 	}
 	return garden, solveForRange(0, len(params.courtiers)-1, params, garden)
 }
@@ -129,38 +129,32 @@ func solveForRange(start, end int, params caseParams, garden [][]tile) (err erro
 
 func determineCourtierLocationAndDirection(courtier int, params caseParams) (loc location, dir direction) {
 	if courtier < params.numColumns {
-		fmt.Printf("1: %v %v\n", courtier, params)
 		return location{courtier, -1}, down
 	}
-	if courtier < params.numColumns+params.numRows {
-		fmt.Printf("2: %v %v\n", courtier, params)
-		return location{params.numColumns, courtier - params.numColumns}, left
+	courtier -= params.numColumns
+	if courtier < params.numRows {
+		return location{params.numColumns, courtier}, left
 	}
-	if courtier < params.numColumns*2+params.numRows {
-		fmt.Printf("3: %v %v\n", courtier, params)
-		return location{courtier - params.numColumns - params.numRows, params.numRows}, up
+	courtier -= params.numRows
+	if courtier < params.numColumns {
+		return location{params.numColumns - 1 - courtier, params.numRows}, up
 	}
-	fmt.Printf("4: %v %v\n", courtier, params)
-	return location{-1, courtier - params.numColumns*2 - params.numRows}, right
+	courtier -= params.numColumns
+	return location{-1, params.numRows - 1 - courtier}, right
 }
 
 func fillInPath(startLoc, endLoc location, startDir direction, garden [][]tile) (err error) {
-	fmt.Printf("%v %v %v\n", startLoc, endLoc, startDir)
 	dir := startDir
 	loc := startLoc
 	for {
 		loc = determineNewLocation(loc, dir)
-		fmt.Printf("fill2: %v\n", loc)
 		if loc == endLoc {
 			return nil
 		}
-		fmt.Printf("fill2.1: %v\n", garden)
-		if garden[loc.x][loc.y] == empty {
-			garden[loc.x][loc.y] = determineTile(dir)
-			fmt.Printf("fill3: %v\n", garden)
+		if garden[loc.y][loc.x] == empty {
+			garden[loc.y][loc.x] = determineTile(dir)
 		}
-		dir = determineNewDirection(dir, garden[loc.x][loc.y])
-		fmt.Printf("fill4: %v\n", dir)
+		dir = determineNewDirection(dir, garden[loc.y][loc.x])
 	}
 }
 
@@ -181,7 +175,7 @@ func determineNewLocation(loc location, dir direction) location {
 
 func determineNewDirection(dir direction, tile tile) direction {
 	switch tile {
-	case goRight:
+	case topToBot:
 		switch dir {
 		case left:
 			return up
@@ -192,7 +186,7 @@ func determineNewDirection(dir direction, tile tile) direction {
 		case down:
 			return right
 		}
-	case goLeft:
+	case botToTop:
 		switch dir {
 		case left:
 			return down
@@ -210,13 +204,13 @@ func determineNewDirection(dir direction, tile tile) direction {
 func determineTile(dir direction) tile {
 	switch dir {
 	case left:
-		return goLeft
+		return botToTop
 	case right:
-		return goLeft
+		return botToTop
 	case up:
-		return goRight
+		return topToBot
 	case down:
-		return goRight
+		return topToBot
 	}
 	return empty
 }

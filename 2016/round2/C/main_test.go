@@ -47,7 +47,7 @@ func TestExample1(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		{goLeft},
+		{botToTop},
 	}, garden)
 }
 
@@ -63,7 +63,7 @@ func TestExample2(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		{goLeft, goLeft, goRight},
+		{botToTop, botToTop, topToBot},
 	}, garden)
 }
 
@@ -79,8 +79,8 @@ func TestExample3(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		{goLeft, goLeft},
-		{goRight, goLeft},
+		{botToTop, botToTop},
+		{topToBot, botToTop},
 	}, garden)
 }
 
@@ -109,10 +109,10 @@ func TestComplexGarden(t *testing.T) {
 		t.Fatal(err)
 	}
 	checkOutput(t, [][]tile{
-		{goLeft, goLeft, goLeft, goLeft},
-		{goLeft, goLeft, goLeft, goLeft},
-		{goLeft, goLeft, goLeft, goLeft},
-		{goLeft, goLeft, goLeft, goLeft},
+		{botToTop, botToTop, botToTop, botToTop},
+		{botToTop, botToTop, botToTop, botToTop},
+		{botToTop, botToTop, botToTop, botToTop},
+		{botToTop, botToTop, botToTop, botToTop},
 	}, garden)
 }
 
@@ -121,11 +121,11 @@ func TestComplexImpossibleGarden(t *testing.T) {
 	courtiers := []int{15, 14, 13, 6, 5, 4, 3, 8, 7, 10, 9, 12, 11, 2, 1, 0}
 
 	// Act
-	_, err := solve(caseParams{courtiers, 4, 4})
+	garden, err := solve(caseParams{courtiers, 4, 4})
 
 	// Assert
 	if err == nil {
-		t.Fatal("Expected error!")
+		t.Fatalf("Expected error! garden: %v", garden)
 	}
 }
 
@@ -141,7 +141,7 @@ func checkOutput(t *testing.T, expected [][]tile, actual [][]tile) {
 		}
 		for y := 0; y < len(expectedRow); y++ {
 			if expectedRow[y] != actualRow[y] {
-				t.Errorf("Incorrect value at (%v, %v): %v", x, y, actualRow[y])
+				t.Errorf("Incorrect value at (%v, %v): %v garden: %v", x, y, actualRow[y], actual)
 			}
 		}
 	}

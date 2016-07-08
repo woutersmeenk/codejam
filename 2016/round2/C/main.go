@@ -52,11 +52,7 @@ func main() {
 			panic(err)
 		}
 		garden, err := solve(params)
-		fmt.Printf("Case #%v:\n", t+1)
-		if err != nil {
-			fmt.Println("IMPOSSIBLE")
-		}
-		printOutput(garden)
+		printOutput(garden, err, t+1)
 	}
 	if scanner.Err() != nil {
 		panic(err)
@@ -97,7 +93,8 @@ func solve(params caseParams) (garden [][]tile, err error) {
 	for y := 0; y < params.numRows; y++ {
 		garden[y] = make([]tile, params.numColumns)
 	}
-	return garden, solveForRange(0, len(params.courtiers)-1, params, garden)
+	err = solveForRange(0, len(params.courtiers)-1, params, garden)
+	return garden, err
 }
 
 func solveForRange(start, end int, params caseParams, garden [][]tile) (err error) {
@@ -151,6 +148,9 @@ func fillInPath(startLoc, endLoc location, startDir direction, garden [][]tile) 
 		if loc == endLoc {
 			return nil
 		}
+		if !isInsideGarden(loc, garden) {
+			return fmt.Errorf("Ended up at the wrong courtier!")
+		}
 		if garden[loc.y][loc.x] == empty {
 			garden[loc.y][loc.x] = determineTile(dir)
 		}
@@ -171,6 +171,19 @@ func determineNewLocation(loc location, dir direction) location {
 	default:
 		return loc
 	}
+}
+
+func isInsideGarden(loc location, garden [][]tile) bool {
+	if loc.x < 0 || loc.y < 0 {
+		return false
+	}
+	if loc.y >= len(garden) {
+		return false
+	}
+	if loc.x >= len(garden[0]) {
+		return false
+	}
+	return true
 }
 
 func determineNewDirection(dir direction, tile tile) direction {
@@ -215,6 +228,22 @@ func determineTile(dir direction) tile {
 	return empty
 }
 
-func printOutput(garden [][]tile) {
+func printOutput(garden [][]tile, err error, caseNumber int) {
+	fmt.Printf("Case #%v:\n", caseNumber)
+	if err != nil {
+		fmt.Println("IMPOSSIBLE")
+	} else {
 
+		for y := 0; y < len(garden); y++ {
+			row := garden[y]
+			for x := 0; x < len(row); x++ {
+				if row[x] == empty {
+					fmt.Print(string(topToBot))
+				} else {
+					fmt.Print(string(row[x]))
+				}
+			}
+			fmt.Print("\n")
+		}
+	}
 }

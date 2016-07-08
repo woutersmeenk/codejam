@@ -97,6 +97,19 @@ func TestExample4(t *testing.T) {
 	}
 }
 
+func TestImpossibleWhenFillingPaths(t *testing.T) {
+	// Arrange
+	courtiers := []int{1, 0, 5, 4, 3, 2}
+
+	// Act
+	_, err := solve(caseParams{courtiers, 1, 2})
+
+	// Assert
+	if err == nil {
+		t.Fatal("Expected error!")
+	}
+}
+
 func TestComplexGarden(t *testing.T) {
 	// Arrange
 	courtiers := []int{15, 14, 13, 4, 3, 6, 5, 8, 7, 10, 9, 12, 11, 2, 1, 0}
@@ -113,6 +126,25 @@ func TestComplexGarden(t *testing.T) {
 		{topToBot, botToTop, botToTop, botToTop},
 		{topToBot, botToTop, topToBot, topToBot},
 		{topToBot, botToTop, topToBot, botToTop},
+	}, garden)
+}
+
+func TestWithEmptyCenter(t *testing.T) {
+	// Arrange
+	courtiers := []int{1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14}
+
+	// Act
+	garden, err := solve(caseParams{courtiers, 4, 4})
+
+	// Assert
+	if err != nil {
+		t.Fatal(err)
+	}
+	checkOutput(t, [][]tile{
+		{topToBot, botToTop, topToBot, botToTop},
+		{botToTop, empty, empty, topToBot},
+		{topToBot, empty, empty, botToTop},
+		{botToTop, topToBot, botToTop, topToBot},
 	}, garden)
 }
 

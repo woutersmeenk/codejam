@@ -29,6 +29,7 @@ const (
 )
 
 type caseParams struct {
+	// Courtiers maps each courtier to its lover
 	courtiers           []int
 	numRows, numColumns int
 }
@@ -88,6 +89,7 @@ func parse(scanner *bufio.Scanner) (params caseParams, err error) {
 	return params, nil
 }
 
+// solve produces a garden if it is possible. Otherwise err is non-nil
 func solve(params caseParams) (garden [][]tile, err error) {
 	garden = make([][]tile, params.numRows)
 	for y := 0; y < params.numRows; y++ {
@@ -97,18 +99,23 @@ func solve(params caseParams) (garden [][]tile, err error) {
 	return garden, err
 }
 
+// solveForRange creates all the paths within the garden for the courtiers in the range from
+// start to end. It recursively creates paths within the perimiters of paths of other courtiers.
+// It starts with paths that do not have any other paths within its perimeter (courtiers that are next to each other).
+// Then it works it's way outside. If one of the paths crosses the perimeter no valid garden can be created.
 func solveForRange(start, end int, params caseParams, garden [][]tile) (err error) {
 	lover := params.courtiers[start]
 	if lover < start {
 		// Skip. We already processed this one before
 		return solveForRange(start+1, end, params, garden)
 	}
+	// Check if the courtier crosses outside of the range
 	if lover > end {
 		return fmt.Errorf("lover %v of courtier %v is outside of range [%v, %v]",
 			lover, start, start, end)
 	}
 	if start+1 != lover {
-		// Process the ones within this path
+		// Process the ones within this perimeter
 		if err := solveForRange(start+1, lover-1, params, garden); err != nil {
 			return err
 		}
@@ -140,6 +147,9 @@ func determineCourtierLocationAndDirection(courtier int, params caseParams) (loc
 	return location{-1, params.numRows - 1 - courtier}, right
 }
 
+// fillInPath creates a path from the start to the finish location. It goes round in a clockwise along the empty center
+// of the garden creating a path next to the already existing paths. If it does not end up at the end location it means
+// there is not path possible.
 func fillInPath(startLoc, endLoc location, startDir direction, garden [][]tile) (err error) {
 	dir := startDir
 	loc := startLoc
